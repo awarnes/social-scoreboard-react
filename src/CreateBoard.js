@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 
 class CreateBoard extends Component {
   render () {
@@ -17,12 +18,11 @@ class CreateBoard extends Component {
         <input
           type='text'
           id='contestantInput'
-          value={this.props.boardContestants}
+          value={this.props.contestantNames}
           onChange={this.props.updateBoardContestants}
         />
         <br/>
-        <button id='createButton' onClick={() => { console.log('hello!') }}>Create Board</button>
-        <p>{this.props.boardContestants}</p>
+        <button type='button' onClick={e => e.preventDefault()}><Link to={`/board`}>Create Board</Link></button>
       </div>
     )
   }
