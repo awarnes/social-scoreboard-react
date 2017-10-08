@@ -1,16 +1,40 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import {
+  Button,
+  FormGroup,
+  InputGroup,
+  ControlLabel,
+  Row, Col } from 'react-bootstrap'
 
 class ContestantRow extends Component {
   render () {
+    const contestantName = this.props.contestant.name
     return (
-      <tr>
-        <td className='name'>{this.props.contestant.name}</td>
-        <td className='decrement'><button className='decrementButton' onClick={() => { this.props.decrementScore(this.props.contestant.name) }}>-</button></td>
-        <td className='score'>{this.props.contestant.score}</td>
-        <td className='increment'><button className='incrementButton' onClick={() => { this.props.incrementScore(this.props.contestant.name) }}>+</button></td>
-      </tr>
+      <Row>
+        <Col className='name' xs='8'>{contestantName}</Col>
+        <Col className='scoreGroup' xs='4'>
+          <FormGroup>
+            <InputGroup>
+              <InputGroup.Button className='decrement'>
+                <Button className='decrementButton' onClick={() => { this.props.decrementScore(contestantName) }}>-</Button>
+              </InputGroup.Button>
+              <ControlLabel className='score'>{this.props.contestant.score}</ControlLabel>
+              <InputGroup.Button className='increment'>
+                <Button className='incrementButton' onClick={() => { this.props.incrementScore(contestantName) }}>+</Button>
+              </InputGroup.Button>
+            </InputGroup>
+          </FormGroup>
+        </Col>
+      </Row>
     )
   }
+}
+
+ContestantRow.propTypes = {
+  contestant: PropTypes.object,
+  decrementScore: PropTypes.func,
+  incrementScore: PropTypes.func
 }
 
 export default ContestantRow

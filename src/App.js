@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import {
   BrowserRouter as Router,
-  Route,
+  Route
 } from 'react-router-dom'
+import { Well } from 'react-bootstrap'
 
+import './App.css'
 import CreateBoard from './CreateBoard'
 import ScoreBoard from './ScoreBoard'
 
@@ -96,28 +98,30 @@ class App extends Component {
 
   render () {
     return (
-      <Router>
-        <div>
-          <Route exact path='/'
-            render={props => (<CreateBoard {...props}
-              updateBoardTitle={this.updateBoardTitle}
-              updateBoardContestants={this.updateBoardContestants}
-              boardTitle={this.state.boardTitle}
-              contestantNames={this.state.contestantNames}
-              boardContestants={this.state.boardContestants}
-            />)} />
-          <Route path='/board'
-            render={props => (<ScoreBoard {...props}
-              boardTitle={this.state.boardTitle}
-              boardContestants={this.state.boardContestants}
-              incrementScore={this.incrementScore}
-              decrementScore={this.decrementScore}
-              incrementAll={this.incrementAll}
-              decrementAll={this.decrementAll}
-              clearAll={this.clearAll}
-            />)} />
-        </div>
-      </Router>
+      <Well>
+        <Router>
+          <div>
+            <Route exact path='/'
+              render={props => (<CreateBoard {...props}
+                updateBoardTitle={this.updateBoardTitle}
+                updateBoardContestants={this.updateBoardContestants}
+                boardTitle={this.state.boardTitle}
+                contestantNames={this.state.contestantNames}
+                boardContestants={this.state.boardContestants}
+              />)} />
+            <Route path='/board'
+              render={props => (<ScoreBoard {...props}
+                boardTitle={this.state.boardTitle}
+                boardContestants={this.state.boardContestants}
+                incrementScore={this.incrementScore}
+                decrementScore={this.decrementScore}
+                incrementAll={this.incrementAll}
+                decrementAll={this.decrementAll}
+                clearAll={this.clearAll}
+              />)} />
+          </div>
+        </Router>
+      </Well>
     )
   }
 }
