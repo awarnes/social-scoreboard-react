@@ -1,9 +1,21 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
-import App from '../App'
+import ScoreBoard from '../ScoreBoard'
 
-/* global it expect */
+import Enzyme, { shallow } from 'enzyme'
+import Adapter from 'enzyme-adapter-react-16'
 
-it('', () => {
-  expect(true).toBe(true)
+/* global describe it beforeEach expect jest */
+
+Enzyme.configure({ adapter: new Adapter() })
+
+describe('ScoreBoard', () => {
+  let wrapper
+
+  beforeEach(() => {
+    wrapper = shallow(<ScoreBoard />)
+  })
+
+  it('', () => {
+    expect(true).toBe(true)
+  })
 })

@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import ContestantRow from '../ContestantRow'
 
 import Enzyme, { shallow } from 'enzyme'
@@ -18,11 +17,14 @@ describe('ContestantRow', () => {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow(<ContestantRow contestant={mockContestant} />)
+    wrapper = shallow(<ContestantRow
+      contestant={mockContestant}
+      decrementScore={mockDecrementScore}
+      incrementScore={mockIncrementScore} />)
   })
 
   it('renders the ContestantRow correctly', () => {
-    const tr = wrapper.find('tr')
+    const tr = wrapper.find('row')
     expect(tr.length).toBe(1)
 
     const td = wrapper.render().find('td')
