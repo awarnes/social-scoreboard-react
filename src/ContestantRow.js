@@ -12,8 +12,8 @@ class ContestantRow extends Component {
     const contestantName = this.props.contestant.name
     return (
       <Row>
-        <Col className='name' xs='8'>{contestantName}</Col>
-        <Col className='scoreGroup' xs='4'>
+        <Col className='name' xs={8}>{contestantName}</Col>
+        <Col className='scoreGroup' xs={4}>
           <FormGroup>
             <InputGroup>
               <InputGroup.Button className='decrement'>
