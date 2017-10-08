@@ -9,14 +9,21 @@ import './App.css'
 import CreateBoard from './CreateBoard'
 import ScoreBoard from './ScoreBoard'
 
+/* global fetch */
+
+const DATABASE_ROOT_URL = 'https://social-scoreboard.firebaseio.com'
+
 class App extends Component {
   constructor (props) {
     super(props)
 
     this.state = {
-      boardTitle: '',
       contestantNames: '',
-      boardContestants: []
+      boardInfo: {
+        boardTitle: '',
+        boardContestants: []
+      },
+      activeBoardId: ''
     }
 
     this.updateBoardTitle = this.updateBoardTitle.bind(this)
@@ -26,20 +33,27 @@ class App extends Component {
     this.incrementAll = this.incrementAll.bind(this)
     this.decrementAll = this.decrementAll.bind(this)
     this.clearAll = this.clearAll.bind(this)
+    this.createNewBoard = this.createNewBoard.bind(this)
   }
 
   updateBoardTitle (evt) {
-    this.setState({boardTitle: evt.target.value})
+    const newBoardInfo = Object.assign({}, this.state.boardInfo)
+    newBoardInfo.boardTitle = evt.target.value
+    this.setState({boardInfo: newBoardInfo})
   }
 
   updateBoardContestants (evt) {
     const contestantNames = evt.target.value.split(',')
 
+    const newBoardInfo = Object.assign({}, this.state.boardInfo)
+
     const boardContestants = contestantNames.map((name) => {
       return {name: name.trim(), score: 0}
     })
 
-    this.setState({boardContestants, contestantNames: evt.target.value})
+    newBoardInfo.boardContestants = boardContestants
+
+    this.setState({boardInfo: newBoardInfo, contestantNames: evt.target.value})
   }
 
   incrementScore (incContestant) {
@@ -96,6 +110,29 @@ class App extends Component {
     this.setState({boardContestants: newBoardContestants})
   }
 
+  createNewBoard () {
+    const postData = {
+      method: 'POST',
+      body: JSON.stringify({boardInfo: this.state.boardInfo})
+    }
+
+    fetch(`${DATABASE_ROOT_URL}/boards.json`, postData)
+      .then((response) => response.json())
+      .then((boardUid) => {
+        console.log(boardUid)
+        this.setState({activeBoardId: boardUid.name})
+
+        // let boardInfo = Object.assign({}, this.state.activeBoardInfo, {[boardUid.name]: this.state.boardTitle})
+        // const putData = {
+        //   method: 'PUT',
+        //   body: JSON.stringify(boardInfo)
+        // }
+        // // assign the new board to each user that is a part of it ???? maybe have different to assign board to user when they are added to it...
+        // return fetch(`${DATABASE_ROOT_URL}/boards/${this.state.activeBoardId}/users.json`, putData)
+      })
+      .catch((err) => { console.error(err) })
+  }
+
   render () {
     return (
       <Well>
@@ -105,14 +142,15 @@ class App extends Component {
               render={props => (<CreateBoard {...props}
                 updateBoardTitle={this.updateBoardTitle}
                 updateBoardContestants={this.updateBoardContestants}
-                boardTitle={this.state.boardTitle}
+                boardTitle={this.state.boardInfo.boardTitle}
                 contestantNames={this.state.contestantNames}
-                boardContestants={this.state.boardContestants}
+                boardContestants={this.state.boardInfo.boardContestants}
+                createNewBoard={this.createNewBoard}
               />)} />
-            <Route path='/board'
+            <Route path='/board/{:id}'
               render={props => (<ScoreBoard {...props}
-                boardTitle={this.state.boardTitle}
-                boardContestants={this.state.boardContestants}
+                boardTitle={this.state.boardInfo.boardTitle}
+                boardContestants={this.state.boardInfo.boardContestants}
                 incrementScore={this.incrementScore}
                 decrementScore={this.decrementScore}
                 incrementAll={this.incrementAll}
