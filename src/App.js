@@ -57,57 +57,57 @@ class App extends Component {
   }
 
   incrementScore (incContestant) {
-    const newBoardContestants = this.state.boardContestants.map(x => x)
+    const newBoardInfo = Object.assign({}, this.state.boardInfo)
 
-    newBoardContestants.forEach((contestant) => {
+    newBoardInfo.boardContestants.forEach((contestant) => {
       if (contestant.name === incContestant) {
         contestant.score += 1
       }
     })
 
-    this.setState({boardContestants: newBoardContestants})
+    this.setState({boardInfo: newBoardInfo})
   }
 
   decrementScore (decContestant) {
-    const newBoardContestants = this.state.boardContestants.map(x => x)
-
-    newBoardContestants.forEach((contestant) => {
+    const newBoardInfo = Object.assign({}, this.state.boardInfo)
+    
+    newBoardInfo.boardContestants.forEach((contestant) => {
       if (contestant.name === decContestant) {
         contestant.score -= 1
       }
     })
 
-    this.setState({boardContestants: newBoardContestants})
+    this.setState({boardInfo: newBoardInfo})
   }
 
   incrementAll () {
-    const newBoardContestants = this.state.boardContestants.map(x => x)
+    const newBoardInfo = Object.assign({}, this.state.boardInfo)
 
-    newBoardContestants.forEach((contestant) => {
+    newBoardInfo.boardContestants.forEach((contestant) => {
       contestant.score += 1
     })
 
-    this.setState({boardContestants: newBoardContestants})
+    this.setState({boardInfo: newBoardInfo})
   }
 
   decrementAll () {
-    const newBoardContestants = this.state.boardContestants.map(x => x)
+    const newBoardInfo = Object.assign({}, this.state.boardInfo)
 
-    newBoardContestants.forEach((contestant) => {
+    newBoardInfo.boardContestants.forEach((contestant) => {
       contestant.score -= 1
     })
 
-    this.setState({boardContestants: newBoardContestants})
+    this.setState({boardInfo: newBoardInfo})
   }
 
   clearAll () {
-    const newBoardContestants = this.state.boardContestants.map(x => x)
+    const newBoardInfo = Object.assign({}, this.state.boardInfo)
 
-    newBoardContestants.forEach((contestant) => {
+    newBoardInfo.boardContestants.forEach((contestant) => {
       contestant.score = 0
     })
 
-    this.setState({boardContestants: newBoardContestants})
+    this.setState({boardInfo: newBoardInfo})
   }
 
   createNewBoard () {

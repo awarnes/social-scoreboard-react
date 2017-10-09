@@ -12,8 +12,7 @@ class CreateBoard extends Component {
   }
 
   async handleCreateNewBoard () {
-    const boardUid = await this.props.createNewBoard()
-
+    await this.props.createNewBoard()
     return this.props.history.push(`/board/${this.props.activeBoardId}`)
   }
 
