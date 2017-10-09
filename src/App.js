@@ -116,19 +116,10 @@ class App extends Component {
       body: JSON.stringify({boardInfo: this.state.boardInfo})
     }
 
-    fetch(`${DATABASE_ROOT_URL}/boards.json`, postData)
+    return fetch(`${DATABASE_ROOT_URL}/boards.json`, postData)
       .then((response) => response.json())
       .then((boardUid) => {
-        console.log(boardUid)
         this.setState({activeBoardId: boardUid.name})
-
-        // let boardInfo = Object.assign({}, this.state.activeBoardInfo, {[boardUid.name]: this.state.boardTitle})
-        // const putData = {
-        //   method: 'PUT',
-        //   body: JSON.stringify(boardInfo)
-        // }
-        // // assign the new board to each user that is a part of it ???? maybe have different to assign board to user when they are added to it...
-        // return fetch(`${DATABASE_ROOT_URL}/boards/${this.state.activeBoardId}/users.json`, putData)
       })
       .catch((err) => { console.error(err) })
   }
@@ -146,8 +137,9 @@ class App extends Component {
                 contestantNames={this.state.contestantNames}
                 boardContestants={this.state.boardInfo.boardContestants}
                 createNewBoard={this.createNewBoard}
+                activeBoardId={this.state.activeBoardId}
               />)} />
-            <Route path='/board/{:id}'
+            <Route path='/board/:uid'
               render={props => (<ScoreBoard {...props}
                 boardTitle={this.state.boardInfo.boardTitle}
                 boardContestants={this.state.boardInfo.boardContestants}
