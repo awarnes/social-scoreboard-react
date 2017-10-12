@@ -1,14 +1,17 @@
 import React, { Component } from 'react'
 import {
   BrowserRouter as Router,
-  Route
+  Route,
+  Redirect
 } from 'react-router-dom'
-import { Well, Button } from 'react-bootstrap'
+import { Well } from 'react-bootstrap'
 import fire, { auth, provider } from './firebaseConfig'
 
 import './App.css'
 import CreateBoard from './CreateBoard'
 import ScoreBoard from './ScoreBoard'
+import LoginPage from './LoginPage'
+import UserDashboard from './UserDashboard'
 
 class App extends Component {
   constructor (props) {
@@ -21,7 +24,8 @@ class App extends Component {
         boardContestants: []
       },
       activeBoardId: '',
-      user: null
+      user: null,
+      userName: ''
     }
 
     this.updateBoardTitle = this.updateBoardTitle.bind(this)
@@ -35,12 +39,13 @@ class App extends Component {
     this.updateScoreBoardFromDatabase = this.updateScoreBoardFromDatabase.bind(this)
     this.login = this.login.bind(this)
     this.logout = this.logout.bind(this)
+    this.getUserInformation = this.getUserInformation.bind(this)
   }
 
   componentDidMount () {
     auth.onAuthStateChanged((user) => {
       if (user) {
-        this.setState({ user })
+        this.setState({ user, userName: user.displayName }, () => { this.getUserInformation() })
       }
     })
   }
@@ -144,11 +149,30 @@ class App extends Component {
       })
   }
 
+  getUserInformation () {
+    const userRef = fire.database().ref(`users/${this.state.user.uid}`)
+    userRef.once('child_added')
+      .then((snapshot) => {
+        console.log(userRef.val())
+      })
+  }
+
+  createUser (userUid) {
+    const userRef = fire.database().ref(`users/${userUid}`)
+    userRef.once('value')
+      .then((dataSnapshot) => {
+        if (!dataSnapshot.exists()) {
+          console.log('AppleSAuce Bitch!')
+          console.log(dataSnapshot.key)
+        }
+      })
+  }
+
   login () {
     auth.signInWithPopup(provider)
       .then((result) => {
         const user = result.user
-        this.setState({user})
+        this.setState({user}, () => { this.createUser() })
       })
   }
 
@@ -162,10 +186,22 @@ class App extends Component {
   render () {
     return (
       <Well>
-        { this.state.user ? <Button onClick={this.logout}>Log Out</Button> : <Button onClick={this.login}>Log In</Button> }
         <Router>
           <div>
             <Route exact path='/'
+              render={(props) =>
+                (this.state.user ? (<Redirect to={`/${this.state.user.uid}/dashboard`} />)
+                  : (<LoginPage {...props}
+                    login={this.login}
+                  />))} />
+
+            <Route path={`/:uid/dashboard`}
+              render={props => (<UserDashboard {...props}
+                logout={this.logout}
+                userName={this.state.userName}
+              />)} />
+
+            <Route path='/createboard'
               render={props => (<CreateBoard {...props}
                 updateBoardTitle={this.updateBoardTitle}
                 updateBoardContestants={this.updateBoardContestants}
