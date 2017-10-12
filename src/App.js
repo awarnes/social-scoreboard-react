@@ -119,11 +119,11 @@ class App extends Component {
     this.setState({boardInfo: newBoardInfo}, () => { this.updateScoresInDatabase() })
   }
 
-  // Possible security issue: if there is not activeBoardId in state, will wipe database and replace with current state.boardInfo data.
   updateScoresInDatabase () {
-    console.log(this.history)
-    const boardInfoRef = fire.database().ref(`boards/${this.state.activeBoardId}`)
-    boardInfoRef.set(this.state.boardInfo)
+    if (this.state.activeBoardId !== '') {
+      const boardInfoRef = fire.database().ref(`boards/${this.state.activeBoardId}`)
+      boardInfoRef.set(this.state.boardInfo)
+    }
   }
 
   createNewBoard () {
