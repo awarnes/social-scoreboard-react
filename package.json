@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "firebase": "^4.5.0",
     "prop-types": "^15.6.0",
     "react": "^16.0.0",
     "react-bootstrap": "^0.31.3",
@@ -16,7 +17,8 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "lint": "node_modules/.bin/eslint",
-    "lint-fix": "node_modules/.bin/eslint --fix ./src"
+    "lint-fix": "node_modules/.bin/eslint --fix ./src",
+    "deploy": "firebase deploy"
   },
   "devDependencies": {
     "enzyme": "^3.1.0",

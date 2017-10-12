@@ -1,10 +1,21 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
+// import { withRouter } from 'react-router-dom'
 
 import { FormGroup, FormControl, ControlLabel, Button, Row, Col, HelpBlock } from 'react-bootstrap'
 
 class CreateBoard extends Component {
+  constructor (props) {
+    super(props)
+
+    this.handleCreateNewBoard = this.handleCreateNewBoard.bind(this)
+  }
+
+  async handleCreateNewBoard () {
+    await this.props.createNewBoard()
+    return this.props.history.push(`/board/${this.props.activeBoardId}`)
+  }
+
   render () {
     return (
       <Row>
@@ -47,7 +58,7 @@ class CreateBoard extends Component {
           <Row>
             <Col xs={4} />
             <Col xs={4}>
-              <Button type='button'><Link to={`/board`}>Create Board</Link></Button>
+              <Button type='button' onClick={this.handleCreateNewBoard}>Create Board</Button>
             </Col>
             <Col xs={4} />
           </Row>
@@ -62,7 +73,9 @@ CreateBoard.propTypes = {
   boardTitle: PropTypes.string,
   updateBoardTitle: PropTypes.func,
   contestantNames: PropTypes.string,
-  updateBoardContestants: PropTypes.func
+  updateBoardContestants: PropTypes.func,
+  // createNewBoard: PropTypes.func,
+  activeBoardId: PropTypes.string
 }
 
 export default CreateBoard
