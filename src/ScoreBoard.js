@@ -6,9 +6,14 @@ import { Button, Well, Row, Col, ButtonGroup } from 'react-bootstrap'
 import ContestantRow from './ContestantRow'
 
 class ScoreBoard extends Component {
+  componentWillMount () {
+    this.props.updateScoreBoardFromDatabase(this.props.match.params.uid)
+  }
+
   render () {
-    const rows = this.props.boardContestants.map((contestant) => {
+    const rows = this.props.boardInfo.boardContestants.map((contestant) => {
       return <ContestantRow
+        key={contestant.name}
         contestant={contestant}
         decrementScore={this.props.decrementScore}
         incrementScore={this.props.incrementScore} />
@@ -21,7 +26,7 @@ class ScoreBoard extends Component {
           <Row>
             <Col xs={0} sm={2} md={3} />
             <Col xs={12} sm={8} md={6}>
-              <h1>{this.props.boardTitle}</h1>
+              <h1>{this.props.boardInfo.boardTitle}</h1>
             </Col>
             <Col xs={0} sm={2} md={3} />
           </Row>
@@ -57,13 +62,14 @@ class ScoreBoard extends Component {
 }
 
 ScoreBoard.propTypes = {
-  boardContestants: PropTypes.array,
-  boardTitle: PropTypes.string,
+  boardInfo: PropTypes.object,
   decrementAll: PropTypes.func,
   incrementAll: PropTypes.func,
   decrementScore: PropTypes.func,
   incrementScore: PropTypes.func,
-  clearAll: PropTypes.func
+  clearAll: PropTypes.func,
+  match: PropTypes.object,
+  updateScoreBoardFromDatabase: PropTypes.func
 }
 
 export default ScoreBoard

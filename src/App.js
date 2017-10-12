@@ -3,15 +3,12 @@ import {
   BrowserRouter as Router,
   Route
 } from 'react-router-dom'
-import { Well } from 'react-bootstrap'
+import { Well, Button } from 'react-bootstrap'
+import fire, { auth, provider } from './firebaseConfig'
 
 import './App.css'
 import CreateBoard from './CreateBoard'
 import ScoreBoard from './ScoreBoard'
-
-/* global fetch */
-
-const DATABASE_ROOT_URL = 'https://social-scoreboard.firebaseio.com'
 
 class App extends Component {
   constructor (props) {
@@ -23,7 +20,8 @@ class App extends Component {
         boardTitle: '',
         boardContestants: []
       },
-      activeBoardId: ''
+      activeBoardId: '',
+      user: null
     }
 
     this.updateBoardTitle = this.updateBoardTitle.bind(this)
@@ -34,6 +32,17 @@ class App extends Component {
     this.decrementAll = this.decrementAll.bind(this)
     this.clearAll = this.clearAll.bind(this)
     this.createNewBoard = this.createNewBoard.bind(this)
+    this.updateScoreBoardFromDatabase = this.updateScoreBoardFromDatabase.bind(this)
+    this.login = this.login.bind(this)
+    this.logout = this.logout.bind(this)
+  }
+
+  componentDidMount () {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        this.setState({ user })
+      }
+    })
   }
 
   updateBoardTitle (evt) {
@@ -65,19 +74,19 @@ class App extends Component {
       }
     })
 
-    this.setState({boardInfo: newBoardInfo})
+    this.setState({boardInfo: newBoardInfo}, () => { this.updateScoresInDatabase() })
   }
 
   decrementScore (decContestant) {
     const newBoardInfo = Object.assign({}, this.state.boardInfo)
-    
+
     newBoardInfo.boardContestants.forEach((contestant) => {
       if (contestant.name === decContestant) {
         contestant.score -= 1
       }
     })
 
-    this.setState({boardInfo: newBoardInfo})
+    this.setState({boardInfo: newBoardInfo}, () => { this.updateScoresInDatabase() })
   }
 
   incrementAll () {
@@ -87,7 +96,7 @@ class App extends Component {
       contestant.score += 1
     })
 
-    this.setState({boardInfo: newBoardInfo})
+    this.setState({boardInfo: newBoardInfo}, () => { this.updateScoresInDatabase() })
   }
 
   decrementAll () {
@@ -97,7 +106,7 @@ class App extends Component {
       contestant.score -= 1
     })
 
-    this.setState({boardInfo: newBoardInfo})
+    this.setState({boardInfo: newBoardInfo}, () => { this.updateScoresInDatabase() })
   }
 
   clearAll () {
@@ -107,26 +116,53 @@ class App extends Component {
       contestant.score = 0
     })
 
-    this.setState({boardInfo: newBoardInfo})
+    this.setState({boardInfo: newBoardInfo}, () => { this.updateScoresInDatabase() })
+  }
+
+  // Possible security issue: if there is not activeBoardId in state, will wipe database and replace with current state.boardInfo data.
+  updateScoresInDatabase () {
+    console.log(this.history)
+    const boardInfoRef = fire.database().ref(`boards/${this.state.activeBoardId}`)
+    boardInfoRef.set(this.state.boardInfo)
   }
 
   createNewBoard () {
-    const postData = {
-      method: 'POST',
-      body: JSON.stringify({boardInfo: this.state.boardInfo})
-    }
-
-    return fetch(`${DATABASE_ROOT_URL}/boards.json`, postData)
-      .then((response) => response.json())
-      .then((boardUid) => {
-        this.setState({activeBoardId: boardUid.name})
+    const boardsRef = fire.database().ref('boards')
+    boardsRef.push(this.state.boardInfo)
+    boardsRef.once('child_added')
+      .then((dataSnapshot) => {
+        this.setState({activeBoardId: dataSnapshot.key})
       })
-      .catch((err) => { console.error(err) })
+  }
+
+  updateScoreBoardFromDatabase (boardUid) {
+    const boardInfoRef = fire.database().ref(`boards/${boardUid}`)
+    boardInfoRef.once('value')
+      .then((snapshot) => {
+        let boardInfo = snapshot.val()
+        this.setState({boardInfo, activeBoardId: boardUid})
+      })
+  }
+
+  login () {
+    auth.signInWithPopup(provider)
+      .then((result) => {
+        const user = result.user
+        this.setState({user})
+      })
+  }
+
+  logout () {
+    auth.signOut()
+      .then(() => {
+        this.setState({user: null})
+      })
   }
 
   render () {
     return (
       <Well>
+        { this.state.user ? <Button onClick={this.logout}>Log Out</Button> : <Button onClick={this.login}>Log In</Button> }
         <Router>
           <div>
             <Route exact path='/'
@@ -141,8 +177,8 @@ class App extends Component {
               />)} />
             <Route path='/board/:uid'
               render={props => (<ScoreBoard {...props}
-                boardTitle={this.state.boardInfo.boardTitle}
-                boardContestants={this.state.boardInfo.boardContestants}
+                updateScoreBoardFromDatabase={this.updateScoreBoardFromDatabase}
+                boardInfo={this.state.boardInfo}
                 incrementScore={this.incrementScore}
                 decrementScore={this.decrementScore}
                 incrementAll={this.incrementAll}
