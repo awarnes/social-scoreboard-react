@@ -4,6 +4,10 @@ import PropTypes from 'prop-types'
 import { Button, Row, Col } from 'react-bootstrap'
 
 class UserDashboard extends Component {
+  componentWillMount () {
+
+  }
+
   render () {
     // const boardList = this.props.userBoards.map((board) => {
     //   return <Button key={board.uid}>{board.name}</Button>

@@ -153,17 +153,17 @@ class App extends Component {
     const userRef = fire.database().ref(`users/${this.state.user.uid}`)
     userRef.once('child_added')
       .then((snapshot) => {
-        console.log(userRef.val())
+        console.log(snapshot)
       })
   }
 
-  createUser (userUid) {
-    const userRef = fire.database().ref(`users/${userUid}`)
+  createUser () {
+    const userRef = fire.database().ref(`users/${this.state.user.uid}`)
     userRef.once('value')
       .then((dataSnapshot) => {
+        console.log('dataSnapshot', dataSnapshot)
         if (!dataSnapshot.exists()) {
-          console.log('AppleSAuce Bitch!')
-          console.log(dataSnapshot.key)
+          console.log('dataSnapshot.key', dataSnapshot.key)
         }
       })
   }
@@ -171,7 +171,9 @@ class App extends Component {
   login () {
     auth.signInWithPopup(provider)
       .then((result) => {
+        console.log('result', result)
         const user = result.user
+        console.log('user', user)
         this.setState({user}, () => { this.createUser() })
       })
   }
