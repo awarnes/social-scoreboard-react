@@ -1,11 +1,21 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-import { Button, Row, Col, Link } from 'react-bootstrap'
+import { Button, Row, Col } from 'react-bootstrap'
 
 class UserDashboard extends Component {
+  constructor (props) {
+    super(props)
+
+    this.handleLogout = this.handleLogout.bind(this)
+  }
   componentWillMount () {
     this.props.getUserBoards()
+  }
+
+  async handleLogout () {
+    await this.props.logout()
+    return this.props.history.push(`/`)
   }
 
   render () {
@@ -38,7 +48,7 @@ class UserDashboard extends Component {
           <Col xs={0} sm={2} md={3} />
           <Col xs={12} sm={8} md={6}>
             <Button type='button' onClick={this.props.createBoard}>Create Board</Button>
-            <Button type='button' onClick={this.props.logout}>Logout of Social Scoreboard</Button>
+            <Button type='button' onClick={this.handleLogout}>Logout of Social Scoreboard</Button>
           </Col>
           <Col xs={0} sm={2} md={3} />
         </Row>
