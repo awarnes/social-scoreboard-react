@@ -8,8 +8,9 @@ class UserDashboard extends Component {
     super(props)
 
     this.handleLogout = this.handleLogout.bind(this)
+    this.handleCreateBoard = this.handleCreateBoard.bind(this)
   }
-  componentWillMount () {
+  componentWillUpdate () {
     this.props.getUserBoards()
   }
 
@@ -18,15 +19,19 @@ class UserDashboard extends Component {
     return this.props.history.push(`/`)
   }
 
+  async handleCreateBoard () {
+    return this.props.history.push('/createboard')
+  }
+
   render () {
     let boardList
-    if (this.props.userBoards) {
-      boardList = this.props.userBoards.map((board) => {
-        return <Button key={board.uid}>{board.name}</Button>
-      })
-    } else {
-      boardList = [<h4>It appears that you haven't created any boards yet.</h4>, <h4>Click 'Create Board' below to make a new one!</h4>]
-    }
+    // if (this.props.userBoards) {
+    //   boardList = this.props.userBoards.map((board) => {
+    //     return <Button key={board.boardKey}>{board.boardTitle}</Button>
+    //   })
+    // } else {
+    boardList = [<h4>It appears that you haven't created any boards yet.</h4>, <h4>Click 'Create Board' below to make a new one!</h4>]
+    // }
 
     return (
       <div>
@@ -47,7 +52,7 @@ class UserDashboard extends Component {
         <Row>
           <Col xs={0} sm={2} md={3} />
           <Col xs={12} sm={8} md={6}>
-            <Button type='button' onClick={this.props.createBoard}>Create Board</Button>
+            <Button type='button' onClick={this.handleCreateBoard}>Create Board</Button>
             <Button type='button' onClick={this.handleLogout}>Logout of Social Scoreboard</Button>
           </Col>
           <Col xs={0} sm={2} md={3} />

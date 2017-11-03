@@ -135,11 +135,18 @@ class App extends Component {
   }
 
   createNewBoard () {
+    const userRef = fire.database().ref(`/users/${this.state.user.uid}/boards`)
     const boardsRef = fire.database().ref('boards')
     boardsRef.push(this.state.boardInfo)
     boardsRef.once('child_added')
       .then((dataSnapshot) => {
         this.setState({activeBoardId: dataSnapshot.key})
+        userRef.once('value')
+          .then((dataSnapshot) => {
+            const oldData = dataSnapshot.val() ? dataSnapshot.val() : []
+            oldData.push({boardKey: this.state.activeBoardId, boardTitle: this.state.boardInfo.boardTitle})
+            userRef.set(oldData)
+          })
       })
   }
 
@@ -165,7 +172,7 @@ class App extends Component {
     userRef.once('value')
       .then((dataSnapshot) => {
         if (!dataSnapshot.exists()) {
-          userRef.push({[dataSnapshot.key]: {boards: []}})
+          userRef.set({exists: 1, boards: []})
         }
       })
   }
