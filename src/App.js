@@ -162,8 +162,8 @@ class App extends Component {
   getUserInformation () {
     const userRef = fire.database().ref(`users/${this.state.user.uid}`)
     userRef.once('child_added')
-      .then((snapshot) => {
-        console.log(snapshot)
+      .then((dataSnapshot) => {
+        this.setState({userBoards: dataSnapshot.val()})
       })
   }
 
