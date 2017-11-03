@@ -8,6 +8,7 @@ import { Well } from 'react-bootstrap'
 import fire, { auth, provider } from './firebaseConfig'
 
 import './App.css'
+
 import CreateBoard from './CreateBoard'
 import ScoreBoard from './ScoreBoard'
 import LoginPage from './LoginPage'
@@ -25,7 +26,8 @@ class App extends Component {
       },
       activeBoardId: '',
       user: null,
-      userName: ''
+      userName: '',
+      userBoards: []
     }
 
     this.updateBoardTitle = this.updateBoardTitle.bind(this)
@@ -40,6 +42,7 @@ class App extends Component {
     this.login = this.login.bind(this)
     this.logout = this.logout.bind(this)
     this.getUserInformation = this.getUserInformation.bind(this)
+    this.getUserBoards = this.getUserBoards.bind(this)
   }
 
   componentDidMount () {
@@ -161,10 +164,17 @@ class App extends Component {
     const userRef = fire.database().ref(`users/${this.state.user.uid}`)
     userRef.once('value')
       .then((dataSnapshot) => {
-        console.log('dataSnapshot', dataSnapshot)
         if (!dataSnapshot.exists()) {
-          console.log('dataSnapshot.key', dataSnapshot.key)
+          userRef.push({[dataSnapshot.key]: {boards: []}})
         }
+      })
+  }
+
+  getUserBoards () {
+    const userRef = fire.database().ref(`users/${this.state.user.uid}/boards`)
+    userRef.once('value')
+      .then((dataSnapshot) => {
+        this.setState({userBoards: dataSnapshot.val()})
       })
   }
 
@@ -201,6 +211,8 @@ class App extends Component {
               render={props => (<UserDashboard {...props}
                 logout={this.logout}
                 userName={this.state.userName}
+                getUserBoards={this.getUserBoards}
+                userBoards={this.state.userBoards}
               />)} />
 
             <Route path='/createboard'
@@ -213,6 +225,7 @@ class App extends Component {
                 createNewBoard={this.createNewBoard}
                 activeBoardId={this.state.activeBoardId}
               />)} />
+
             <Route path='/board/:uid'
               render={props => (<ScoreBoard {...props}
                 updateScoreBoardFromDatabase={this.updateScoreBoardFromDatabase}
