@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 // import { withRouter } from 'react-router-dom'
 
-import { FormGroup, FormControl, ControlLabel, Button, Row, Col, HelpBlock } from 'react-bootstrap'
+import { FormGroup, FormControl, ControlLabel, Button, Row, Col, HelpBlock, ButtonGroup } from 'react-bootstrap'
 
 class CreateBoard extends Component {
   constructor (props) {
@@ -56,11 +56,14 @@ class CreateBoard extends Component {
             </Col>
           </Row>
           <Row>
-            <Col xs={4} />
-            <Col xs={4}>
-              <Button type='button' onClick={this.handleCreateNewBoard}>Create Board</Button>
+            <Col xs={3} />
+            <Col xs={6}>
+              <ButtonGroup>
+                <Button type='button' onClick={this.handleCreateNewBoard}>Create Board</Button>
+                <Button id='returnHome' onClick={() => { this.props.history.push('/') }}>Cancel</Button>
+              </ButtonGroup>
             </Col>
-            <Col xs={4} />
+            <Col xs={3} />
           </Row>
         </Col>
         <Col xs={3} />
