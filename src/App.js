@@ -42,7 +42,7 @@ class App extends Component {
     this.login = this.login.bind(this)
     this.logout = this.logout.bind(this)
     this.getUserInformation = this.getUserInformation.bind(this)
-    this.getUserBoards = this.getUserBoards.bind(this)
+    this.deleteScoreBoard = this.deleteScoreBoard.bind(this)
   }
 
   componentDidMount () {
@@ -150,6 +150,18 @@ class App extends Component {
       })
   }
 
+  deleteScoreBoard (boardId) {
+    const boardRef = fire.database().ref(`/boards/${boardId}`)
+    const userRef = fire.database().ref(`/users/${this.state.user.uid}/boards`)
+    boardRef.remove()
+    userRef.once('value')
+      .then((dataSnapshot) => {
+        const newBoards = dataSnapshot.val().filter(board => !(board.boardKey === boardId))
+        userRef.set(newBoards)
+        this.setState({userBoards: newBoards})
+      })
+  }
+
   updateScoreBoardFromDatabase (boardUid) {
     const boardInfoRef = fire.database().ref(`boards/${boardUid}`)
     boardInfoRef.once('value')
@@ -163,35 +175,16 @@ class App extends Component {
     const userRef = fire.database().ref(`users/${this.state.user.uid}`)
     userRef.once('child_added')
       .then((dataSnapshot) => {
-        this.setState({userBoards: dataSnapshot.val()})
-      })
-  }
-
-  createUser () {
-    const userRef = fire.database().ref(`users/${this.state.user.uid}`)
-    userRef.once('value')
-      .then((dataSnapshot) => {
-        if (!dataSnapshot.exists()) {
-          userRef.set({exists: 1, boards: []})
-        }
-      })
-  }
-
-  getUserBoards () {
-    const userRef = fire.database().ref(`users/${this.state.user.uid}/boards`)
-    userRef.once('value')
-      .then((dataSnapshot) => {
-        this.setState({userBoards: dataSnapshot.val()})
+        const userBoards = dataSnapshot.val() ? dataSnapshot.val() : []
+        this.setState({userBoards})
       })
   }
 
   login () {
     auth.signInWithPopup(provider)
       .then((result) => {
-        console.log('result', result)
         const user = result.user
-        console.log('user', user)
-        this.setState({user}, () => { this.createUser() })
+        this.setState({user})
       })
   }
 
@@ -218,8 +211,8 @@ class App extends Component {
               render={props => (<UserDashboard {...props}
                 logout={this.logout}
                 userName={this.state.userName}
-                getUserBoards={this.getUserBoards}
                 userBoards={this.state.userBoards}
+                deleteScoreBoard={this.deleteScoreBoard}
               />)} />
 
             <Route path='/createboard'

@@ -9,10 +9,8 @@ class UserDashboard extends Component {
 
     this.handleLogout = this.handleLogout.bind(this)
     this.handleCreateBoard = this.handleCreateBoard.bind(this)
+    this.handleDeleteBoard = this.handleDeleteBoard.bind(this)
   }
-  // componentWillUpdate () {
-  //   this.props.getUserBoards()
-  // }
 
   async handleLogout () {
     await this.props.logout()
@@ -23,11 +21,24 @@ class UserDashboard extends Component {
     return this.props.history.push('/createboard')
   }
 
+  handleDeleteBoard (boardId) {
+    this.props.deleteScoreBoard(boardId)
+  }
+
   render () {
     let boardList
     if (this.props.userBoards) {
       boardList = this.props.userBoards.map((board) => {
-        return <ListGroupItem key={board.boardKey} href={`/board/${board.boardKey}`}>{board.boardTitle}</ListGroupItem>
+        return <ListGroupItem key={board.boardKey} href={`/board/${board.boardKey}`}>
+          <Row>
+            <Col xs={10}>
+              {board.boardTitle}
+            </Col>
+            <Col xs={2}>
+              <Button type='button' onClick={(evt) => { evt.preventDefault(); this.handleDeleteBoard(board.boardKey) }} className='text-right'>Delete</Button>
+            </Col>
+          </Row>
+        </ListGroupItem>
       })
     } else {
       boardList = [<h4>It appears that you haven't created any boards yet.</h4>, <h4>Click 'Create Board' below to make a new one!</h4>]
@@ -70,5 +81,5 @@ UserDashboard.propTypes = {
   logout: PropTypes.func,
   userName: PropTypes.string,
   userBoards: PropTypes.array,
-  getUserBoards: PropTypes.func
+  deleteScoreBoard: PropTypes.func
 }
