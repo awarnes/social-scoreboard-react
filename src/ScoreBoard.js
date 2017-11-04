@@ -78,6 +78,7 @@ ScoreBoard.propTypes = {
   incrementScore: PropTypes.func,
   clearAll: PropTypes.func,
   match: PropTypes.object,
+  history: PropTypes.object,
   updateScoreBoardFromDatabase: PropTypes.func
 }
 

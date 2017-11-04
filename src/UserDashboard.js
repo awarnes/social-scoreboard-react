@@ -78,8 +78,8 @@ class UserDashboard extends Component {
 export default UserDashboard
 
 UserDashboard.propTypes = {
-  logout: PropTypes.func,
   userName: PropTypes.string,
   userBoards: PropTypes.array,
-  deleteScoreBoard: PropTypes.func
+  deleteScoreBoard: PropTypes.func,
+  history: PropTypes.object
 }

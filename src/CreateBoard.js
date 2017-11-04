@@ -77,7 +77,7 @@ CreateBoard.propTypes = {
   updateBoardTitle: PropTypes.func,
   contestantNames: PropTypes.string,
   updateBoardContestants: PropTypes.func,
-  // createNewBoard: PropTypes.func,
+  history: PropTypes.object,
   activeBoardId: PropTypes.string
 }
 

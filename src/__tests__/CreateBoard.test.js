@@ -34,9 +34,8 @@ describe('CreateBoard', () => {
     expect(wrapper.find('FormControl').length).toBe(2)
   })
 
-  it('renders 1 Button and 1 Link', () => {
-    expect(wrapper.find('Button').length).toBe(1)
-    expect(wrapper.find('Link').length).toBe(1)
+  it('renders 2 Buttons', () => {
+    expect(wrapper.find('Button').length).toBe(2)
   })
 
   it('performs the updateBoardTitle callback correctly', () => {
@@ -53,13 +52,5 @@ describe('CreateBoard', () => {
     wrapper.find('#contestantInput').simulate('change', {target: {value: 'Apple'}})
 
     expect(mockProps.updateBoardContestants.mock.calls.length).toBe(1)
-  })
-
-  it('doesn\'t do anything if you click the button', () => {
-    const prevProps = wrapper.props()
-
-    wrapper.find('Button').simulate('click')
-
-    expect(wrapper.props()).toEqual(prevProps)
   })
 })
