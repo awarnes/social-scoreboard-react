@@ -14,8 +14,10 @@ const mockProps = {
   incrementAll: jest.fn(),
   decrementAll: jest.fn(),
   clearAll: jest.fn(),
-  boardContestants: [{name: 'apple', score: 0}],
-  boardTitle: 'Apple'
+  boardInfo: {boardContestants: [{name: 'apple', score: 0}],
+    boardTitle: 'Apple'},
+  updateScoreBoardFromDatabase: jest.fn(),
+  match: {params: {uid: 'apple123'}}
 }
 
 describe('ScoreBoard', () => {
@@ -26,11 +28,11 @@ describe('ScoreBoard', () => {
   })
 
   it('renders 4 Rows', () => {
-    expect(wrapper.find('Row').length).toBe(4)
+    expect(wrapper.find('Row').length).toBe(5)
   })
 
   it('renders 12 Cols', () => {
-    expect(wrapper.find('Col').length).toBe(12)
+    expect(wrapper.find('Col').length).toBe(15)
   })
 
   it('renders the boardTitle correctly', () => {

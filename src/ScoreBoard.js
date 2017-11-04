@@ -54,6 +54,15 @@ class ScoreBoard extends Component {
             </Col>
             <Col xs={3} md={4} />
           </Row>
+          <Row>
+            <Col xs={3} md={4} />
+            <Col xs={6} md={4}>
+              <ButtonGroup>
+                <Button id='returnHome' onClick={() => { this.props.history.push('/') }}>Return to Dashboard</Button>
+              </ButtonGroup>
+            </Col>
+            <Col xs={3} md={4} />
+          </Row>
         </Col>
         <Col xs={0} sm={2} md={3} />
       </Row>
@@ -69,6 +78,7 @@ ScoreBoard.propTypes = {
   incrementScore: PropTypes.func,
   clearAll: PropTypes.func,
   match: PropTypes.object,
+  history: PropTypes.object,
   updateScoreBoardFromDatabase: PropTypes.func
 }
 
